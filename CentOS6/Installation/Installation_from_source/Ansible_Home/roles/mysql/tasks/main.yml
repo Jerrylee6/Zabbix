@@ -1,0 +1,79 @@
+---
+- name: Install Prerequisites for MySQL5.6
+  yum: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - zlib-devel
+    - libtermcap-devel
+    - libxml2
+    - libxml2-devel
+    - gcc-c++
+    - make
+    - autoconf
+    - automake
+    - cmake
+
+- name: Download "{{ MySQL_Version }}.tar.gz" Package, and release
+  unarchive: src="{{ Down_MySQL_Package }}" dest="{{ Release_dir }}" remote_src=True
+
+- name: Add an account for the MySQL Service
+  user: name="{{ MySQL_User }}" shell=/sbin/nologin createhome=no append=yes
+
+- name: create "{{ MySQL_Prefix }}" directory if it doesn't exist
+  file: 
+    path: "{{ MySQL_Prefix }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: 0755
+  become: yes
+
+- name: create "{MySQL_DataDir}" directory if it doesn't exist
+  file:
+    path: "{{ MySQL_DataDir }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: 0755
+  become: yes
+
+- name: Download "{{ MySQL_Script }}"
+  get_url: url="{{ Down_MySQL_Script }}" dest="{{ Release_dir }}/{{ MySQL_Version }}"
+  
+- name: Change "{{ MySQL_Script }}" file Permissions
+  file: path="{{ Release_dir}}/{{ MySQL_Version }}/{{ MySQL_Script }}" mode=0755
+  
+- name: Run "{{ MySQL_Script }}" script
+  script: /bin/bash "{{ Release_dir}}/{{ MySQL_Version }}/{{ MySQL_Script }} {{ MySQL_Version }}"
+
+- name: Initialozation MySQL DataDir 
+  command: "{{ MySQL_Prefix }}/scripts/mysql_install_db --user=mysql --basedir={{ MySQL_Prefix }} --datadir={{ MySQL_DataDir }}"
+
+- name: Link MySQL File
+  file: src="{{ MySQL_Prefix }}/bin/mysql" dest=/usr/bin/mysql state=link
+
+- name: build my.cnf file
+  template:
+    src: my-default.cnf
+    dest: /etc/my.cnf
+  become: yes
+  
+- name: Build MySQL SERVICE File
+  template:
+    src: mysql.server
+    dest: /etc/init.d/mysqld
+    mode: 0755
+  become: yes
+
+- name: Delete Old MySQL_SERVICE File
+  command: chkconfig --del mysqld
+  
+- name: Add New MySQL_SERVICE File
+  command: chkconfig --add mysqld
+  
+- name: Configuration MySQL_SERVICE
+  command: chkconfig mysqld on
+
+  notify: restart mysqld
+  

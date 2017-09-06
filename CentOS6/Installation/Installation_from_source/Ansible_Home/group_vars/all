@@ -1,0 +1,89 @@
+---
+# Variables listed here are applicable to all host groups
+lee_version: 3.0
+lee_sha256sum: c1856cf969b1e73025ba2c681491908c3a4a6c5a2333f4531
+
+#
+# Variables Download_Package_Path on Github
+Down_Package_Path: https://raw.githubusercontent.com/Jerrylee6/Zabbix/master/CentOS6/Installation/Source_Packages
+
+# The path to the release package is located
+Package_dir: /packages
+Release_dir: "{{ Package_dir }}/release"
+
+#
+# This is used for the NGINX Server configuration Variables:
+
+Nginx_Download_Path: http://nginx.org/download
+Nginx_Version: nginx-1.8.0
+Nginx_Script: build_nginx.sh 
+
+Down_Nginx_Package: "{{ Nginx_Download_Path }}/{{ Nginx_Version }}.tar.gz"
+Down_Nginx_Script: "{{ Down_Package_Path }}/NGINX/{{ Nginx_Script }}"
+
+Nginx_Port: 80
+Nginx_User: nobody
+Server_HostName: web01.example.com
+Nginx_Prefix: /usr/local/nginx						#If you need to change, please modify the installation script file
+Nginx_RootDir: /data/wwwroot
+Nginx_Log: /var/log/nginx
+Nginx_PidFile: /var/run
+
+#
+# This is used for the MySQL Server configuration Variables:
+
+MySQL_Download_Path: https://downloads.mysql.com/archives/get/file
+MySQL_Version: mysql-5.6.36
+MySQL_Script: build_mysql.sh
+
+Down_MySQL_Package: "{{ MySQL_Download_Path }}/{{ MySQL_Version }}.tar.gz"
+Down_MySQL_Script: "{{ Down_Package_Path }}/MySQL/{{ MySQL_Script }}"
+
+MySQL_Port: 3306
+MySQL_User: mysql                               # MySQL Server Manage User
+MySQL_Prefix: /safe/mysql						# If you need to change, please modify the installation script file
+MySQL_DataDir: /data/MySQLDB					# If you need to change, please modify the installation script file
+MySQL_DB_Host: 127.0.0.1						# MySQL Server Host
+MySQL_DB_User: root                             # MySQL Access User
+MySQL_DB_Pwd: MyNewPass7!                       # MySQL Access Pwd
+
+#
+# This is used for the PHP Server configuration Variables:
+
+PHP_Download_Path: http://cn2.php.net/distributions
+PHP_Version: php-5.6.30
+PHP_Script: build_php.sh
+PHP_PidFile: /var/run/php-fpm/php-fpm.pid
+
+PHP_Port: 9000									# For configuration, refer to php-fpm.conf
+PHP_User: nobody								# For configuration, refer to php-fpm.conf
+Down_PHP_Package: "{{ PHP_Download_Path }}/{{ PHP_Version }}.tar.gz"
+Down_PHP_Script: "{{ Down_Package_Path }}/PHP/{{ PHP_Script }}"
+
+#
+# This is used for the Zabbix Server configuration Variables:
+
+Iksemel_Version: iksemel-1.4
+Iksemel_Script: build_iksemel.sh
+
+Zabbix_Download_Path: https://nchc.dl.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable
+Version: 3.4.0
+Zabbix_Version: "zabbix-{{ Version }}"
+Zabbix_Server_Script: build_zabbix_server.sh
+
+Down_Iksemel_Package: "{{Down_Package_Path}}/ZABBIX/{{ Iksemel_Version }}.tar.gz"
+Down_Iksemel_Script: "{{Down_Package_Path}}/ZABBIX/{{ Iksemel_Script }}"
+
+Down_Zabbix_Package: "{{ Zabbix_Download_Path }}/{{ Version }}/{{ Zabbix_Version }}.tar.gz"
+Down_Zabbix_Script: "{{ Down_Package_Path }}/ZABBIX/{{ Zabbix_Server_Script }}"
+
+Zabbix_UDP_Port: 10050
+Zabbix_TCP_Port: 10050
+Zabbix_User: zabbix
+Zabbix_PidFile: /tmp/zabbix_server.pid
+
+Zabbix_DB_Host: 127.0.0.1
+Zabbix_DB_Port: 3306
+Zabbix_DB_DBName: zabbix
+Zabbix_DB_User: hizabbix
+Zabbix_DB_Pwd: MyNewPass7!

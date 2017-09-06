@@ -1,0 +1,12 @@
+---
+- name: Install NGINX
+  hosts: all
+  remote_user: root
+
+  roles:
+    - common
+    - nginx
+    - mysql
+    - php
+    - zabbix-server
+    - zabbix-agent

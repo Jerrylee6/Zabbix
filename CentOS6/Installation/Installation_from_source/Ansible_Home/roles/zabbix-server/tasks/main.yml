@@ -1,0 +1,103 @@
+---
+- name: Install Prerequisites for Zabbix-3.4.0
+  yum: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - net-snmp
+    - net-snmp-devel  
+    - libcurl-devel
+    - OpenIPMI
+    - OpenIPMI-tools
+    - OpenIPMI-libs
+    - libssh2-devel
+    - OpenIPMI-devel
+
+- name: Download "{{ Zabbix_Version }}" Package, and release
+  unarchive: src="{{ Down_Zabbix_Package }}" dest="{{ Release_dir }}" remote_src=True
+
+- name: Download "{{ Iksemel_Version }}" Package, and release
+  unarchive: src="{{ Down_Iksemel_Package }}" dest="{{ Release_dir }}" remote_src=True
+
+- name: Download "{{ Iksemel_Script }}"
+  get_url: url="{{ Down_Iksemel_Script }}" dest="{{ Release_dir }}/{{ Iksemel_Version }}"
+
+- name: Run "{{ Iksemel_Script }}" 
+  script: /bin/bash "{{ Release_dir}}/{{ Iksemel_Version }}/{{ Iksemel_Script }} {{ Iksemel_Version }}"
+
+- name: Add an account for the Zabbix_Service
+  user: name="{{ Zabbix_User }}" shell=/sbin/nologin createhome=no append=yes
+
+- name: Download "{{ Zabbix_Server_Script }}"
+  get_url: url="{{ Down_Zabbix_Script }}" dest="{{ Release_dir }}/{{ Zabbix_Version }}"
+  
+- name: Run "{{ Zabbix_Server_Script }}" 
+  script: /bin/bash "{{ Release_dir}}/{{ Zabbix_Version }}/{{ Zabbix_Server_Script }} {{ Zabbix_Version }}"
+##
+# Import mysql
+# Import nginx html
+##
+- name: Create a new database with name 'Zabbix',And Import schema
+  mysql_db:
+    login_user: "{{ MySQL_DB_User }}"
+    login_password: "{{}}"
+    login_host: "{{ MySQL_DB_Host }}"
+    state: import
+    name: "{{ Zabbix_DB_DBName }}"
+    target: "{{ Release_dir}}/{{ Zabbix_Version }}/database/mysql/schema.sql"
+  ignore_errors: yes
+
+- name: database with name 'Zabbix',And Import images
+  mysql_db:
+    login_user: "{{ MySQL_DB_User }}"
+    login_password: "{{}}"
+    login_host: "{{ MySQL_DB_Host }}"
+    state: import
+    name: "{{ Zabbix_DB_DBName }}"
+    target: "{{ Release_dir}}/{{ Zabbix_Version }}/database/mysql/images.sql"
+  ignore_errors: yes
+
+- name: database with name 'Zabbix',And Import data
+  mysql_db:
+    login_user: "{{ MySQL_DB_User }}"
+    login_password: "{{}}"
+    login_host: "{{ MySQL_DB_Host }}"
+    state: import
+    name: "{{ Zabbix_DB_DBName }}"
+    target: "{{ Release_dir}}/{{ Zabbix_Version }}/database/mysql/data.sql"
+  ignore_errors: yes
+
+- name: Create database user for Zabbix Project
+  mysql_user:
+    login_user: "{{ MySQL_DB_User }}"
+    login_password: "{{}}"
+    host: "{{ Zabbix_DB_Host }}"
+    name: "{{ Zabbix_DB_DBName }}"
+    password: "{{ Zabbix_DB_Pwd }}"
+    priv: "{{ Zabbix_DB_DBName }}.*:ALL"
+    state: present
+    update_password: on_create
+
+- name: Import HTML into NGINX/monitor
+  copy: src="{{ Release_dir}}/{{ Zabbix_Version }}/frontends/php" dest="{{ Nginx_RootDir }}/monitor"
+# 上面太慢了
+######
+
+- name: Build zabbix_server file
+  template:
+    src: zabbix_server
+    dest: /etc/init.d/zabbix_server
+    mode: 0755
+  become: yes
+
+- name: Delete Old ZABBIX_SERVICE File
+  command: chkconfig --del zabbix_server
+  
+- name: Add New ZABBIX_SERVICE File
+  command: chkconfig --add zabbix_server
+  
+- name: Configuration ZABBIX_SERVICE
+  command: chkconfig zabbix_server on
+
+  notify: restart zabbix_server
+  

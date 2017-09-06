@@ -1,0 +1,84 @@
+---
+- name: Install prerequisites for NGINX
+  yum: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - gcc
+    - pcre-devel
+    - openssl-devel
+    - httpd-tools
+
+- name: Download "{{ Nginx_Version }}.tar.gz" Package, and release
+  unarchive:
+    src: "{{ Down_Nginx_Package }}"
+    dest: "{{ Release_dir }}"
+    remote_src: True
+  tags:
+    - Download Nginx_Package
+
+- name: Download "{{ Nginx_Script }}"
+  get_url: url="{{ Down_Nginx_Script }}" dest="{{ Release_dir }}/{{ Nginx_Version }}"
+  tags:
+    - Download build_nginx
+
+- name: Change "{{ Nginx_Script }}" file Permissions
+  file:
+    path: "{{Release_dir}}/{{Nginx_Version}}/{{Nginx_Script}}"
+    mode: 0755
+  tags:
+    - Permissions build_nginx
+
+- name: Run "{{Nginx_Script}}" script
+  script: /bin/bash "{{Release_dir}}/{{Nginx_Version}}/{{Nginx_Script}} {{Nginx_Version}}"
+  tags:
+    - Run build_nginx Script
+    
+- name: Copy nginx.conf file
+  template:
+    src: nginx.conf
+    dest: "{{ Nginx_Prefix }}/conf/nginx.conf"
+  become: yes
+  
+- name: Create vhosts on "{{ Nginx_Prefix }}/conf"
+  file:
+    path: "{{ Nginx_Prefix }}/conf/vhosts"  
+    state: directory
+    mode: 0755
+  become: yes
+
+- name: Copy vhosts template
+  template: 
+    src: vhosts/default.conf 
+    dest: "{{ Nginx_Prefix }}/conf/vhosts/default.conf"
+  become: yes
+
+- name: Create nginx_log on "{{ Nginx_Log }}"
+  file:
+    path: "{{ Nginx_Log }}"  
+    state: directory
+    mode: 0755
+  become: yes
+
+- name: Create NGINX_HOME on "{{ Nginx_RootDir }}"
+  file:
+    path: "{{ Nginx_RootDir }}"  
+    state: directory
+    mode: 0755
+  become: yes
+
+- name: Add NGINX Service on Host init.d Permissions
+  template:
+    src: nginx
+    dest: /etc/init.d/
+    mode: 0755
+  become: yes
+
+- name: Delete NGINX Service on Host
+  command: chkconfig --del nginx
+- name: Add NGINX Service on Host
+  command: chkconfig --add nginx
+- name: Configuration NGINX Service on Host
+  command: chkconfig nginx on
+  
+  notify: restart nginx
