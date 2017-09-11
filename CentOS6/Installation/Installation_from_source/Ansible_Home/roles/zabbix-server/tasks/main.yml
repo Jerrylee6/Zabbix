@@ -4,6 +4,7 @@
     name: "{{ item }}"
     state: present
   with_items:
+    - rsync
     - net-snmp
     - net-snmp-devel  
     - libcurl-devel
@@ -33,10 +34,7 @@
   
 - name: Run "{{ Zabbix_Server_Script }}" 
   script: /bin/bash "{{ Release_dir}}/{{ Zabbix_Version }}/{{ Zabbix_Server_Script }} {{ Zabbix_Version }}"
-##
-# Import mysql
-# Import nginx html
-##
+
 - name: Create a new database with name 'Zabbix',And Import schema
   mysql_db:
     login_user: "{{ MySQL_DB_User }}"
@@ -79,9 +77,9 @@
     update_password: on_create
 
 - name: Import HTML into NGINX/monitor
-  copy: src="{{ Release_dir}}/{{ Zabbix_Version }}/frontends/php" dest="{{ Nginx_RootDir }}/monitor"
-# 上面太慢了
-######
+  synchronize: 
+    src: "{{ Release_dir}}/{{ Zabbix_Version }}/frontends/php/"
+    dest: "{{Nginx_RootDir}}/monitor"
 
 - name: Build zabbix_server file
   template:
@@ -99,5 +97,5 @@
 - name: Configuration ZABBIX_SERVICE
   command: chkconfig zabbix_server on
 
-  notify: restart zabbix_server
+  notify: Reload Services
   

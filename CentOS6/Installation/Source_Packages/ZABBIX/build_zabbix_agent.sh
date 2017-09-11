@@ -15,7 +15,7 @@
 . /etc/init.d/functions
 
 # Variables
-cd /packages/release/zabbix-3.2.7/
+cd /packages/release/$1
 
 ./configure --enable-agent
 
