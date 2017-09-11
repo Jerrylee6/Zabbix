@@ -41,11 +41,8 @@
 - name: Download "{{ MySQL_Script }}"
   get_url: url="{{ Down_MySQL_Script }}" dest="{{ Release_dir }}/{{ MySQL_Version }}"
   
-- name: Change "{{ MySQL_Script }}" file Permissions
-  file: path="{{ Release_dir}}/{{ MySQL_Version }}/{{ MySQL_Script }}" mode=0755
-  
 - name: Run "{{ MySQL_Script }}" script
-  script: /bin/bash "{{ Release_dir}}/{{ MySQL_Version }}/{{ MySQL_Script }} {{ MySQL_Version }}"
+  script: /bin/bash "{{ Release_dir}}/{{ MySQL_Version }}/{{ MySQL_Script }}" "{{ MySQL_Version }}"
 
 - name: Initialozation MySQL DataDir 
   command: "{{ MySQL_Prefix }}/scripts/mysql_install_db --user=mysql --basedir={{ MySQL_Prefix }} --datadir={{ MySQL_DataDir }}"

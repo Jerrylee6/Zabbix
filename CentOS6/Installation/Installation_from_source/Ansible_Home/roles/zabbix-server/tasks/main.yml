@@ -24,7 +24,7 @@
   get_url: url="{{ Down_Iksemel_Script }}" dest="{{ Release_dir }}/{{ Iksemel_Version }}"
 
 - name: Run "{{ Iksemel_Script }}" 
-  script: /bin/bash "{{ Release_dir}}/{{ Iksemel_Version }}/{{ Iksemel_Script }} {{ Iksemel_Version }}"
+  script: /bin/bash "{{ Release_dir}}/{{ Iksemel_Version }}/{{ Iksemel_Script }}" "{{ Iksemel_Version }}"
 
 - name: Add an account for the Zabbix_Service
   user: name="{{ Zabbix_User }}" shell=/sbin/nologin createhome=no append=yes
@@ -33,7 +33,7 @@
   get_url: url="{{ Down_Zabbix_Script }}" dest="{{ Release_dir }}/{{ Zabbix_Version }}"
   
 - name: Run "{{ Zabbix_Server_Script }}" 
-  script: /bin/bash "{{ Release_dir}}/{{ Zabbix_Version }}/{{ Zabbix_Server_Script }} {{ Zabbix_Version }}"
+  script: /bin/bash "{{ Release_dir}}/{{ Zabbix_Version }}/{{ Zabbix_Server_Script }}" "{{ Zabbix_Version }}"
 
 - name: Create a new database with name 'Zabbix',And Import schema
   mysql_db:

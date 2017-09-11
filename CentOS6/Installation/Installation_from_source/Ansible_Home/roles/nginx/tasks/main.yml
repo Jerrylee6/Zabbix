@@ -22,15 +22,8 @@
   tags:
     - Download build_nginx
 
-- name: Change "{{ Nginx_Script }}" file Permissions
-  file:
-    path: "{{Release_dir}}/{{Nginx_Version}}/{{Nginx_Script}}"
-    mode: 0755
-  tags:
-    - Permissions build_nginx
-
 - name: Run "{{Nginx_Script}}" script
-  script: /bin/bash "{{Release_dir}}/{{Nginx_Version}}/{{Nginx_Script}} {{Nginx_Version}}"
+  script: /bin/bash "{{Release_dir}}/{{Nginx_Version}}/{{Nginx_Script}}" "{{Nginx_Version}}"
   tags:
     - Run build_nginx Script
     

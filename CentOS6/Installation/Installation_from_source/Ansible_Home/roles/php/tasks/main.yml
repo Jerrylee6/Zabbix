@@ -21,7 +21,7 @@
   get_url: url="{{ Down_PHP_Script }}" dest="{{ Release_dir }}/{{ PHP_Version }}"
   
 - name: Run "{{ PHP_Script }}" 
-  script: /bin/bash "{{ Release_dir}}/{{ PHP_Version }}/{{ PHP_Script }} {{ PHP_Version }}"
+  script: /bin/bash "{{ Release_dir}}/{{ PHP_Version }}/{{ PHP_Script }}" "{{ PHP_Version }}"
  
 - name: Build php.ini file
   template:
