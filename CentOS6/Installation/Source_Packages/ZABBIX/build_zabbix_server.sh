@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # chkconfig: - 90 10
-# description:      build zabbix client script
+# description:      build zabbix Server script
 #                   System:     CentOS 6 x64
 #                   Version:    1.0
 #
-# @name:            install_build.sh
+# @name:            build_zabbix_server.sh
 # @author:          51inte <51inte@hotmail.com>
-# @created:         13.3.2017
+# @created:         13.9.2017
 # @Script Version:  v1.0
 #
 #
@@ -18,13 +18,12 @@
 cd /packages/release/$1
 
 ./configure \
---with-mysql \
 --with-libcurl \
 --with-ssh2 \
 --with-net-snmp \
 --enable-server \
 --enable-agent \
---enable-java \
---with-jabber=/usr/local
+--with-jabber=/usr/local \
+--with-mysql=/safe/mysql/bin/mysql_config
 
 make && make install
