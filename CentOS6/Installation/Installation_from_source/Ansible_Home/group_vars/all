@@ -71,12 +71,14 @@ Zabbix_Download_Path: https://nchc.dl.sourceforge.net/project/zabbix/ZABBIX%20La
 Version: 3.4.1
 Zabbix_Version: "zabbix-{{ Version }}"
 Zabbix_Server_Script: build_zabbix_server.sh
+Zabbix_Client_Script: build_zabbix_agent.sh
 
 Down_Iksemel_Package: "{{Down_Package_Path}}/ZABBIX/{{ Iksemel_Version }}.tar.gz"
 Down_Iksemel_Script: "{{Down_Package_Path}}/ZABBIX/{{ Iksemel_Script }}"
 
 Down_Zabbix_Package: "{{ Zabbix_Download_Path }}/{{ Version }}/{{ Zabbix_Version }}.tar.gz"
 Down_Zabbix_Script: "{{ Down_Package_Path }}/ZABBIX/{{ Zabbix_Server_Script }}"
+Down_Zabbix_Client_Script: "{{ Down_Package_Path }}/ZABBIX/{{ Zabbix_Client_Script }}"
 
 Zabbix_UDP_Port: 10050
 Zabbix_TCP_Port: 10050

@@ -98,6 +98,13 @@
     mode: 0755
   become: yes
 
+- name: Build zabbix_agent file
+  template:
+    src: zabbix_agentd
+    dest: /etc/init.d/zabbix_agentd
+    mode: 0755
+  become: yes
+
 - name: Delete Old ZABBIX_SERVICE File
   command: chkconfig --del zabbix_server
   

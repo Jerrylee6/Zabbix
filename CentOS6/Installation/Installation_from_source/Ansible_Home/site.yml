@@ -9,4 +9,4 @@
     - mysql
     - php
     - zabbix-server
-    - zabbix-agent
+    - zabbix-agentd

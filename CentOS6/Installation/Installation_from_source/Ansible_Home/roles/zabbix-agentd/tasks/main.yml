@@ -1,0 +1,37 @@
+---
+- name: Install Prerequisites for Zabbix-3.4.1-agentd
+  yum: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - gcc
+
+- name: Download "{{ Zabbix_Version }}" Package, and release
+  unarchive: src="{{ Down_Zabbix_Package }}" dest="{{ Release_dir }}" remote_src=True
+
+- name: Add an account for the Zabbix_Service
+  user: name="{{ Zabbix_User }}" shell=/sbin/nologin createhome=no append=yes
+
+- name: Download Zabbix_agent_Script
+  get_url: url="{{ Down_Zabbix_Client_Script }}" dest="{{ Release_dir }}/{{ Zabbix_Version }}"
+  
+- name: Run "{{ Zabbix_Client_Script }}" 
+  script: /bin/bash "{{ Release_dir}}/{{ Zabbix_Version }}/{{ Zabbix_Client_Script }}" "{{ Zabbix_Version }}"
+
+- name: Build zabbix_agent file
+  template:
+    src: zabbix_agentd
+    dest: /etc/init.d/zabbix_agentd
+    mode: 0755
+  become: yes
+
+- name: Delete Old ZABBIX_SERVICE File
+  command: chkconfig --del zabbix_agentd
+  
+- name: Add New ZABBIX_SERVICE File
+  command: chkconfig --add zabbix_agentd
+  
+- name: Configuration ZABBIX_SERVICE
+  command: chkconfig zabbix_agentd on
+
+  notify: restart zabbix_agentd
