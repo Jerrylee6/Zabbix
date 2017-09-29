@@ -85,7 +85,7 @@ Zabbix_TCP_Port: 10050
 Zabbix_User: zabbix
 Zabbix_PidFile: /tmp/zabbix_server.pid
 
-Zabbix_DB_Host: 127.0.0.1
+Zabbix_DB_Host: localhost
 Zabbix_DB_Port: 3306
 Zabbix_DB_DBName: zabbix
 Zabbix_DB_User: zabbix

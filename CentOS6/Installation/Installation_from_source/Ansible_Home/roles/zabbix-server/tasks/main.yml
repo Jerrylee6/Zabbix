@@ -91,6 +91,13 @@
     src: "{{ Release_dir}}/{{ Zabbix_Version }}/frontends/php/"
     dest: "{{Nginx_RootDir}}/monitor"
 
+- name: Import HTML Configure monitor/conf
+  template:
+    src: zabbix.conf.php
+    dest: "{{Nginx_RootDir}}/monitor/conf/zabbix.conf.php"
+    mode: 0644
+  become: yes
+
 - name: Build zabbix_server file
   template:
     src: zabbix_server
