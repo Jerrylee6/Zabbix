@@ -46,6 +46,7 @@ MySQL_DataDir: /data/MySQLDB					# If you need to change, please modify the inst
 MySQL_DB_Host: 127.0.0.1						# MySQL Server Host
 MySQL_DB_User: root                             # MySQL Access User
 MySQL_DB_Pwd: MyNewPass7!                       # MySQL Access Pwd
+MySQL_DB_Socket: /tmp/mysql.sock				# MySQL Socket_File "SHOW Variables"
 
 #
 # This is used for the PHP Server configuration Variables:
@@ -85,5 +86,5 @@ Zabbix_PidFile: /tmp/zabbix_server.pid
 Zabbix_DB_Host: 127.0.0.1
 Zabbix_DB_Port: 3306
 Zabbix_DB_DBName: zabbix
-Zabbix_DB_User: hizabbix
+Zabbix_DB_User: zabbix
 Zabbix_DB_Pwd: MyNewPass7!

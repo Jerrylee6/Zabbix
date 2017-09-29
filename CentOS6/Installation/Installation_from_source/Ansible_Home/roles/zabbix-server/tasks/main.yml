@@ -1,5 +1,5 @@
 ---
-- name: Install Prerequisites for Zabbix-3.4.0
+- name: Install Prerequisites for Zabbix-3.4.1
   yum: 
     name: "{{ item }}"
     state: present
@@ -37,10 +37,16 @@
 - name: Run "{{ Zabbix_Server_Script }}" 
   script: /bin/bash "{{ Release_dir}}/{{ Zabbix_Version }}/{{ Zabbix_Server_Script }}" "{{ Zabbix_Version }}"
 
+- name: ln zabbix file for service zabbix_start 01
+  command: ln -s /usr/local/lib/libiksemel.so.3 /usr/lib64/
+
+- name: ln zabbix file for service zabbix_start 02
+  command: ln -s /safe/mysql/lib/libmysqlclient.so.18 /usr/lib64/
+
 - name: Create a new database with name 'Zabbix',And Import schema
   mysql_db:
     login_user: "{{ MySQL_DB_User }}"
-    login_password: "{{}}"
+    login_password: "{{ MySQL_DB_Pwd }}"
     login_host: "{{ MySQL_DB_Host }}"
     state: import
     name: "{{ Zabbix_DB_DBName }}"
@@ -50,7 +56,7 @@
 - name: database with name 'Zabbix',And Import images
   mysql_db:
     login_user: "{{ MySQL_DB_User }}"
-    login_password: "{{}}"
+    login_password: "{{ MySQL_DB_Pwd }}"
     login_host: "{{ MySQL_DB_Host }}"
     state: import
     name: "{{ Zabbix_DB_DBName }}"
@@ -60,7 +66,7 @@
 - name: database with name 'Zabbix',And Import data
   mysql_db:
     login_user: "{{ MySQL_DB_User }}"
-    login_password: "{{}}"
+    login_password: "{{ MySQL_DB_Pwd }}"
     login_host: "{{ MySQL_DB_Host }}"
     state: import
     name: "{{ Zabbix_DB_DBName }}"
@@ -70,13 +76,15 @@
 - name: Create database user for Zabbix Project
   mysql_user:
     login_user: "{{ MySQL_DB_User }}"
-    login_password: "{{}}"
+    login_password: "{{ MySQL_DB_Pwd }}"
     host: "{{ Zabbix_DB_Host }}"
     name: "{{ Zabbix_DB_DBName }}"
     password: "{{ Zabbix_DB_Pwd }}"
     priv: "{{ Zabbix_DB_DBName }}.*:ALL"
     state: present
-    update_password: on_create
+    update_password: always
+    config_file: /etc/my.cnf
+    login_unix_socket: /tmp/mysql.sock
 
 - name: Import HTML into NGINX/monitor
   synchronize: 
@@ -99,5 +107,5 @@
 - name: Configuration ZABBIX_SERVICE
   command: chkconfig zabbix_server on
 
-  notify: Reload Services
+  notify: restart nginx php-fpm zabbix_server
   

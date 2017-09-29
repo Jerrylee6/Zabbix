@@ -63,6 +63,16 @@
     mode: 0755
   become: yes
 
+- name: Change MySQL User/PWD
+  mysql_user: 
+     login_user: root
+     login_password: ''
+     user: "{{ MySQL_DB_User }}"
+     password: "{{ MySQL_DB_Pwd }}"
+     update_password: always
+     config_file: /etc/my.cnf
+     login_unix_socket: /tmp/mysql.sock
+
 - name: Delete Old MySQL_SERVICE File
   command: chkconfig --del mysqld
   

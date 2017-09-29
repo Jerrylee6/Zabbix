@@ -40,7 +40,7 @@
   template:
     src: php-fpm
     dest: /etc/init.d/php-fpm
-    mode: 0644
+    mode: 0755
   become: yes
   
 - name: Delete Old PHP_SERVICE File
