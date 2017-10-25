@@ -1,19 +1,32 @@
-Welcome to Zabbix!
-===================
+Zabbix简介
+====
 
-Documents
--------------
-Please select your *Installation from source* directory according to your operating system!
+说明
+----
+请根据您的操作系统从源目录中选择安装！
 
-> **Note:**
+> **例如:**
 
-> - Please select your *Installation from source* directory according to your operating system!
+> - CentOS6操作系统从CentOS6目录中进行安装！
+
+> - 该版本结合Ansible进行部署Zabbix服务,详细内容请查阅Installation_from_source/Ansible_Home
 
 
-#### <i class="icon-file"></i> README.md
+### 已完成模块
 
-#### <i class="icon-folder-open"></i> Installation
+#### NGINX文本处理服务
 
-### Zabbix Lists
+* 自动部署NGINX服务
+* 自动切割NGINX日志
 
-**Zabbix Lists** The defined list looks like :
+#### MySQL数据库存储服务
+
+* 自动部署MySQL数据库存储服务
+
+#### PHP-FPM服务
+
+* 自动部署PHP-FPM服务
+
+#### Zabbix服务
+
+* 自动部署Zabbix服务
