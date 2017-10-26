@@ -3,7 +3,7 @@
   service: name=nginx state=restarted
 
 - name: restart php-fpm
-  service: name=php-fpm state=restarted
+  service: name=php-fpm state=start
 
 - name: restart zabbix_server
   service: name=zabbix_server state=restarted

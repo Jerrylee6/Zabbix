@@ -62,6 +62,9 @@
     dest: /etc/init.d/mysqld
     mode: 0755
   become: yes
+  
+- name: Start MySQL SERVICE
+  command: /bin/bash /etc/init.d/mysqld start
 
 - name: Change MySQL User/PWD
   mysql_user: 

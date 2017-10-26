@@ -15,6 +15,7 @@
     - OpenIPMI-libs
     - libssh2-devel
     - OpenIPMI-devel
+    - MySQL-python
 
 - name: Download "{{ Zabbix_Version }}" Package, and release
   unarchive: src="{{ Down_Zabbix_Package }}" dest="{{ Release_dir }}" remote_src=True
