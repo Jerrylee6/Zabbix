@@ -99,6 +99,13 @@
     mode: 0644
   become: yes
 
+- name: Import Zabbix Server Configure file on Zabbix_Home
+  template:
+    src: zabbix_server.conf
+    dest: "/usr/local/etc/zabbix_server.conf"
+    mode: 0655
+  become: yes
+  
 - name: Build zabbix_server file
   template:
     src: zabbix_server
