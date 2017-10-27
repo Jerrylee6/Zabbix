@@ -5,6 +5,7 @@
     state: present
   with_items:
     - gcc
+    - pcre-devel
 
 - name: Download "{{ Zabbix_Version }}" Package, and release
   unarchive: src="{{ Down_Zabbix_Package }}" dest="{{ Release_dir }}" remote_src=True
