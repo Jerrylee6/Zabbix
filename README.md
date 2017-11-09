@@ -18,6 +18,7 @@ Zabbix简介
 
 * 自动部署NGINX服务
 * 自动切割NGINX日志
+* 开启HTTPS功能
 
 #### MySQL数据库存储服务
 
@@ -30,3 +31,4 @@ Zabbix简介
 #### Zabbix服务
 
 * 自动部署Zabbix服务
+* 自动部署Email报警
