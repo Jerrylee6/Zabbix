@@ -1,0 +1,69 @@
+通过Zabbix 监控 MySQL性能
+
+1.	首先在MySQL服务中为获取MySQL性能数据添加用户
+mysql> grant all on *.* to 'monitor'@'localhost' identified by 'MyNewPass7!'
+mysql> flush privileges;
+
+2.	在Zabbix Agent客户端上为监控MySQL创建".my.cnf" 的配置文件, 具体路径请查看"Zabbix Agent安装位置"
+例如：安装在"/usr/local"
+#cd /usr/local/etc
+#vim .my.cnf
+
+[mysql]
+host=localhost
+socket=/tmp/mysql.sock
+user=monitor
+password=MyNewPass7!
+
+[mysqladmin]
+host=localhost
+socket=/tmp/mysql.sock
+user=monitor
+password=MyNewPass7!
+
+
+3. 配置MySQL的Item采集文件"userparameter_mysql.conf" 该文件在TAR中,可将其解压获取。
+将"userparameter_mysql.conf"Copy 到Zabbix Agent客户端的"/usr/local/etc/zabbix_agentd.conf.d"目录下面
+
+# cp userparameter_mysql.conf /usr/local/etc/zabbix_agentd.conf.d/
+
+3.1 修改userparameter_mysql.conf 配置文件
+
+HOME=/var/lib/zabbix			#把路径全都替换为/usr/local/etc/，也就是上面的.my.cnf文件所在的目录路径
+
+例如下面：
+-------------------------------------------------------------------------------------
+
+# For all the following commands HOME should be set to the directory that has .my.cnf file with password information.
+
+# Flexible parameter to grab global variables. On the frontend side, use keys like mysql.status[Com_insert].
+# Key syntax is mysql.status[variable].
+UserParameter=mysql.status[*],echo "show global status where Variable_name='$1';" | HOME=/usr/local/etc mysql -N | awk '{print $$2}'
+
+# Flexible parameter to determine database or table size. On the frontend side, use keys like mysql.size[zabbix,history,data].
+# Key syntax is mysql.size[<database>,<table>,<type>].
+# Database may be a database name or "all". Default is "all".
+# Table may be a table name or "all". Default is "all".
+# Type may be "data", "index", "free" or "both". Both is a sum of data and index. Default is "both".
+# Database is mandatory if a table is specified. Type may be specified always.
+# Returns value in bytes.
+# 'sum' on data_length or index_length alone needed when we are getting this information for whole database instead of a single table
+UserParameter=mysql.size[*],bash -c 'echo "select sum($(case "$3" in both|"") echo "data_length+index_length";; data|index) echo "$3_length";; free) echo "data_free";; esac)) from information_schema.tables$([[ "$1" = "all" || ! "$1" ]] || echo " where table_schema=\"$1\"")$([[ "$2" = "all" || ! "$2" ]] || echo "and table_name=\"$2\"");" | HOME=/usr/local/etc mysql -N'
+
+UserParameter=mysql.ping,HOME=/usr/local/etc mysqladmin ping | grep -c alive
+UserParameter=mysql.version,mysql -V
+
+-------------------------------------------------------------------------------------
+
+4. 开启zabbix agent 客户端配置文件
+Include=/usr/local/etc/zabbix_agentd.conf.d/
+
+5. WebUI连接"Template DB MySQL"模板
+
+6. Zabbix agent 客户端针对监控MySQL做环境变量配置
+
+ln -s /safe/mysql/bin/mysql /usr/bin/
+ln -s /safe/mysql/bin/mysqladmin /usr/bin/
+
+7.	测试获取数据
+zabbix_get -s localhost -p 10050 -k mysql.ping
