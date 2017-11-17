@@ -13,6 +13,7 @@
     - autoconf
     - automake
     - cmake
+    - MySQL-python
 
 - name: Download "{{ MySQL_Version }}.tar.gz" Package, and release
   unarchive: src="{{ Down_MySQL_Package }}" dest="{{ Release_dir }}" remote_src=True
