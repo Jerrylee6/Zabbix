@@ -32,6 +32,9 @@
 
 - name: Add an account for the Zabbix_Service
   user: name="{{ Zabbix_User }}" shell=/sbin/nologin createhome=no append=yes
+  
+- name: fping supported in the zabbix system
+  command: chmod u+s /usr/sbin/fping
 
 - name: Download "{{ Zabbix_Server_Script }}"
   get_url: url="{{ Down_Zabbix_Script }}" dest="{{ Release_dir }}/{{ Zabbix_Version }}"
