@@ -11,8 +11,9 @@ Linux Server NGINX Monitor
 2. Accepted connections\min			表示：NGINX在1分钟内接收的连接数
 3. Active connections				表示：NGINX当前活跃的连接数又称 "并发数"
 4. Keepalive connections			表示：客户端与NGINX保持连接数
-5. Handled requests					表示：NGINX处理的请求总数
-6. Response code 500 per minute		表示：客户端失败的请求总数
+5. Handled requests					表示：NGINX处理的请求总数 一定大于(NGINX处理的连接数)
+6. Handled connections              表示：NGINX处理的连接数
+7. Response code 500 per minute		表示：客户端失败的请求总数
 
 
 ### 部署步骤
